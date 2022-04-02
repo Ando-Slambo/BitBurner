@@ -54,11 +54,9 @@ export async function main(ns) {
                     }
                     continue;
                 }
-                /*
                 for (const member of members) {
                     ns.gang.setMemberTask(member, "Territory Warfare");
                 }
-                */
                 phase = "complete";
             }
         }

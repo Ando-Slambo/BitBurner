@@ -4,12 +4,11 @@ import { GetLowestStat } from "/gang/trainer.js";
 export async function Commander(ns, members) {
     const skillCap = 1000;
 
-    if (ns.gang.getBonusTime() > 0) { return; }
+    if (ns.gang.getBonusTime() > 10) { return; }
 
     for (const member of members) {
-        if (await GetLowestStat(ns, member) > skillCap) {
-            ns.gang.setMemberTask(member, "Territory Warfare");
-        }
+        const lowest_stat = await GetLowestStat(ns, member);
+        if (lowest_stat > skillCap) { ns.gang.setMemberTask(member, "Territory Warfare"); }
     }
 
     return;
