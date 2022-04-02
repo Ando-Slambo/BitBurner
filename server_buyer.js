@@ -38,8 +38,7 @@ export async function main(ns) {
         //if the current server has less RAM than we want we stop all running processes on it and delete it
         if (ns.getServerMaxRam(servers[i]) < maxAffordableRam) { 
             ns.killall(servers[i]);
-            ns.deleteServer(servers[i]); 
-            continue;
+            ns.deleteServer(servers[i]);
         }
         //else if it has more RAM than we want we skip it
         else if (ns.getServerMaxRam(servers[i]) >= maxAffordableRam) { continue; }
