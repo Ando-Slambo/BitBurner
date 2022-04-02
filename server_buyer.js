@@ -42,7 +42,9 @@ export async function main(ns) {
             continue;
         }
         //else if it has more RAM than we want we skip it
-        else if (ns.getServerMaxRam(servers[i]) >= maxAffordableRam) { continue; }
+        else if (ns.getServerMaxRam(servers[i]) >= maxAffordableRam) {
+            continue;
+        }
         //finally, if neither of the above if statements are true we buy a new server
         ns.purchaseServer(name + i, maxAffordableRam);
     }
