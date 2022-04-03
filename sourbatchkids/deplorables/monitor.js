@@ -26,7 +26,7 @@ export async function main(ns) {
             var growthMultiplier = ns.getServerMaxMoney(batchTarget) / ns.getServerMoneyAvailable(batchTarget);
     
             growThreads += Math.ceil(ns.growthAnalyze(batchTarget, growthMultiplier));
-            weakenThreads += Math.ceil(growThreads * 0.004 / 0.05);
+            weakenThreads += Math.ceil( (growThreads * 0.004) / 0.05 );
             
             await ns.run(grow, growThreads, batchTarget, 1, 999);
         }
@@ -37,7 +37,7 @@ export async function main(ns) {
             weakenThreads += Math.ceil(weakenDifferential / 0.05);
             
             await ns.run(weaken, weakenThreads, batchTarget, 1, 999);
-            await ns.sleep(batchTime + 10000);
+            await ns.sleep(ns.getWeakenTime(batchTarget) + 3000);
         }
         
         batchTime = Calculations(ns, percentToSteal);
