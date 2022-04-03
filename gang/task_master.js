@@ -5,7 +5,7 @@ import { Commander } from "/gang/commander.js";
 import {
     Trainer,
     GetLowestStat,
-    BonusTime
+    CheckAscension
 } from "/gang/trainer.js"
 
 /** @param {import("../.vscode").NS} ns */
@@ -26,17 +26,22 @@ export async function main(ns) {
             members = ns.gang.getMemberNames();
         }
 
-        BonusTime(ns, members);
 
         phase = await CheckPhase(ns, members);
-        if (phase != "complete") {
-            if (phase == 1) {
+        switch (phase) {
+            case "bonus time begin":
+                await CheckAscension(ns, members);
+                await Trainer(ns, members);
+
+            case "bonus time end":
+                await Trainer(ns, members);
+
+            case 1:
                 await Trainer(ns, members);
                 await Commander(ns, members);
                 continue;
-            }
-    
-            if (phase == 2) {
+
+            case 2:
                 if (members.length < 7) {
                     for (const member of members) {
                         ns.gang.setMemberTask(member, "Mug People");
@@ -45,9 +50,9 @@ export async function main(ns) {
                 }
                 await Trainer(ns, members);
                 await Commander(ns, members);
-            }
-    
-            if (phase == 3) {
+                continue;
+
+            case 3:
                 if (members.length < 12) {
                     for (const member of members) {
                         ns.gang.setMemberTask(member, "Human Trafficking");
@@ -57,31 +62,25 @@ export async function main(ns) {
                 for (const member of members) {
                     ns.gang.setMemberTask(member, "Territory Warfare");
                 }
-                phase = "complete";
-            }
         }
     }
 }
 
 /** @param {import("../.vscode").NS} ns */
 async function CheckPhase(ns, members) {
+    if (ns.gang.getBonusTime() > 3600) { return "bonus time begin" }
+
+    if (ns.gang.getBonusTime() <= 3600) { return "bonus time end" }
+
     let eval_members = [];
 
     for (const member of members) {
         eval_members.push(await GetLowestStat(ns, member));
     }
 
-    var lowest_stat;
+    const lowest_stat = Math.min(...eval_members);
 
-    for (var i = 0; i < eval_members.length - 1; i++) {
-        lowest_stat = Math.min(eval_members[i], eval_members[i + 1]);
-    }
-
-    if (lowest_stat < 100) {
-        return 1;
-    }
-    if (lowest_stat < 1000) {
-        return 2
-    }
+    if (lowest_stat < 100) { return 1 }
+    if (lowest_stat < 1000) { return 2 }
     return 3;
 }

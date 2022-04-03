@@ -54,15 +54,12 @@ export async function GetLowestStat(ns, member) {
 }
 
 /** @param {import("../.vscode").NS} ns */
-export async function BonusTime(ns, members) {
-    if (ns.gang.getBonusTime() > 3600) {
-        for (const member of members) {
-            if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) {
-                continue;
-            }
-            ns.gang.ascendMember(member);
-        }
+export async function CheckAscension(ns, members) {
+    for (const member of members) {
+        if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { continue; }
+        ns.gang.ascendMember(member);
     }
+    return;
 }
 
 /** @param {import("../.vscode").NS} ns */
@@ -70,6 +67,7 @@ function NeedsHack(ns, member) {
     const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
     const hack_asc_diff = ns.gang.getAscensionResult(member).hack;
     const hack_after_asc = hack_asc_mult * hack_asc_diff;
+
     return hack_after_asc < 2 + hack_asc_mult;
 }
 
@@ -103,5 +101,6 @@ function NeedsCharisma(ns, member) {
     const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
     const cha_asc_diff = ns.gang.getAscensionResult(member).cha;
     const cha_after_asc = cha_asc_mult * cha_asc_diff;
+    
     return cha_after_asc < 2 + cha_asc_mult;
 }
