@@ -25,15 +25,15 @@ export async function main(ns) {
         switch (phase) {
             case "bonus time begin":
                 await CheckAscension(ns, members);
-                await Trainer(ns, members, "train");
+                await Trainer(ns, members);
                 continue;
 
             case "bonus time end":
-                await Trainer(ns, members, "train");
+                await Trainer(ns, members);
                 continue;
 
             case 1:
-                await Trainer(ns, members, "train");
+                await Trainer(ns, members);
                 continue;
 
             case 2:
@@ -43,7 +43,7 @@ export async function main(ns) {
                     }
                     continue;
                 }
-                await Trainer(ns, members, "fight");
+                await Trainer(ns, members);
                 continue;
 
             case 3:
@@ -53,11 +53,7 @@ export async function main(ns) {
                     }
                     continue;
                 }
-                for (const member of members) {
-                    if (ns.gang.getMemberInformation(member).task != "Territory Warfare") {
-                        ns.gang.setMemberTask(member, "Territory Warfare");
-                    }
-                }
+                await Trainer(ns, members);
         }
     }
 }

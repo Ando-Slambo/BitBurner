@@ -3,11 +3,13 @@ const combat = "Train Combat";
 const charisma = "Train Charisma";
 
 /** @param {import("../.vscode").NS} ns */
-export async function Trainer(ns, members, modifier) {
+export async function Trainer(ns, members) {
     for (const member of members) {
-        if (Math.min(...GetAscensionMults(ns, member)) >= 50) { 
-            ns.gang.setMemberTask(member, "Territory Warfare"); 
-            continue 
+        if (Math.min(...await GetAscensionMults(ns, member)) >= 50) { 
+            if (ns.gang.getMemberInformation(member).task != "Territory Warfare") {
+                ns.gang.setMemberTask(member, "Territory Warfare");
+            }
+            continue;
         }
         const str_lvl = ns.gang.getMemberInformation(member).str;
         const def_lvl = ns.gang.getMemberInformation(member).def;
