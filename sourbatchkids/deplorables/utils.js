@@ -11,7 +11,6 @@ const files = [hack, grow, weaken1, weaken2, monitor, utils, setup, estimator];
 var originServer;
 var originServerRam;
 var targetServer;
-var targetServerMaxMoney;
 
 var hackRam;
 var growRam;
@@ -43,7 +42,6 @@ export function Constructor(ns, batchTarget) {
     originServer = ns.getHostname();
     originServerRam = ns.getServerMaxRam(originServer) - ns.getServerUsedRam(originServer);
     targetServer = batchTarget;
-    targetServerMaxMoney = ns.getServerMaxMoney(targetServer);
 
     growRam = ns.getScriptRam(grow);
     hackRam = ns.getScriptRam(hack);
@@ -52,23 +50,14 @@ export function Constructor(ns, batchTarget) {
 
 /** @param {import("../../.vscode").NS} ns */
 export function Calculations(ns, percentToSteal) {
-    const decimalToSteal = percentToSteal / 100;
     //Hack thread calculation
-    hackThreads = ns.hackAnalyzeThreads(targetServer, targetServerMaxMoney * decimalToSteal);
-    var hackSecAdded = hackThreads * 0.002;
+    hackThreads = ns.hackAnalyzeThreads(targetServer, ns.getServerMaxMoney(targetServer) * (percentToSteal / 100)); //Divide by 100 to convert percent to decimal
     //Amount of weaken threads to offset hack security raise
-    weakenThreads1 = hackSecAdded / 0.05;
-
-    //Grow threads calculation
-    ns.print("Hack threads: " + hackThreads);
-    ns.print("Percent per thread: " + ns.hackAnalyze(targetServer));
-    ns.print("Growth multiplier: " + 1 / (1 - hackThreads * ns.hackAnalyze(targetServer)));
+    weakenThreads1 = (hackThreads * 0.002) / 0.05;
 
     growThreads = ns.growthAnalyze(targetServer, 1 / (1 - hackThreads * ns.hackAnalyze(targetServer))) * 1.1;
-    //growThreads = Math.ceil(ns.growthAnalyze(targetServer, 1 / decimalToSteal) * 1.05 );
-    var growSecAdded = growThreads * 0.004;
     //Amount of weaken threads to offset grow security raise
-    weakenThreads2 = growSecAdded / 0.05;
+    weakenThreads2 = (growThreads * 0.004) / 0.05;
 
     hackThreads = Math.floor(hackThreads);
     growThreads = Math.ceil(growThreads);
