@@ -11,7 +11,8 @@ export async function main(ns) {
     const hostname = "bserv-" + batchTarget;
 
     const serverCost = ns.getPurchasedServerCost(ram);
-    if (await ns.prompt("Servers cost " + ns.nFormat(serverCost, "$0.00a") + ". Continue?\n(Click no if servers already purchased)")) {
+    const purchaseApproved = await ns.prompt("Server costs " + ns.nFormat(serverCost, "$0.00a") + ". Continue?\n(Click no if server already purchased)")
+    if (purchaseApproved) {
         var buyNewServer = true;
         if (ns.getPurchasedServers().includes(hostname)) {
             if (ns.getServerMaxRam(hostname) < ram) {
@@ -27,16 +28,18 @@ export async function main(ns) {
         }
     }
 
-    if (!await Root(ns, batchTarget)) {
-        ns.alert("Unable to root " + batchTarget);
-        return;
+    if (ns.getPurchasedServers().includes(hostname)) {
+        if (!await Root(ns, batchTarget)) {
+            ns.alert("Unable to root " + batchTarget);
+            return;
+        }
+    
+        ns.tprintf("Deploying files to " + hostname);
+        for (var file of Files()) {
+            await ns.scp(file, hostname);
+        }
+    
+        ns.tprintf("Running setup on " + batchTarget);
+        ns.exec(setup, hostname, 1, batchTarget);
     }
-
-    ns.tprintf("Deploying files to " + hostname);
-    for (var file of Files()) {
-        await ns.scp(file, hostname);
-    }
-
-    ns.tprintf("Running setup on " + batchTarget);
-    ns.exec(setup, hostname, 1, batchTarget);
 }
