@@ -30,6 +30,9 @@ export async function main(ns) {
     const growthSecurityRaise = growThreads * 0.004;
     weakenThreads += growthSecurityRaise / 0.05;
 
+    weakenThreads = Math.ceil(weakenThreads / batchesRequired);
+    growThreads = Math.ceil(growThreads / batchesRequired);
+
     //RAM requirements
     const availRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host);
     var requiredRam = (growRam * growThreads) + (weakenRam * weakenThreads);
@@ -42,9 +45,6 @@ export async function main(ns) {
     }
 
     ns.print("Batches required: " + batchesRequired);
-
-    weakenThreads = Math.ceil(weakenThreads / batchesRequired);
-    growThreads = Math.ceil(growThreads / batchesRequired);
 
     //Runs setup operations
     for (var i = 0; i < batchesRequired; i++) {
