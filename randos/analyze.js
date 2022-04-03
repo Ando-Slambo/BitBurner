@@ -11,9 +11,7 @@ export async function main(ns) {
 	}
 
 	for (var i = 1; i < path.length; i++) {
-		if (i < path.length - 1) {
-			path[i] += " > ";
-		}
+		if (i < path.length - 1) { path[i] += " > " }
 		pathString += path[i];
 	}
 	ns.tprintf("\nPath to " + endServer + ":");
@@ -29,9 +27,7 @@ function GetPath(ns, endServer) {
 	while (scanning) {
 		var parent = scan[0];
 		scan = ns.scan(parent);
-		if (parent == "home") {
-			scanning = false;
-		}
+		if (parent == "home") { scanning = false }
 		path.unshift(parent);
 	}
     return path;
