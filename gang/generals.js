@@ -80,7 +80,7 @@ async function GetAscensionMults(ns, member) {
 /** @param {import("../.vscode").NS} ns */
 export async function CheckAscension(ns, members) {
     for (const member of members) {
-        if (Math.min(...GetAscensionMults(ns, member)) >= 50) { continue }
+        if (Math.min(...await GetAscensionMults(ns, member)) >= 50) { continue }
         if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { continue }
         ns.gang.ascendMember(member);
     }
