@@ -22,7 +22,6 @@ export async function main(ns) {
 
 
         phase = await CheckPhase(ns, members);
-        ns.print(phase);
         switch (phase) {
             case "bonus time begin":
                 await CheckAscension(ns, members);

@@ -5,6 +5,10 @@ const charisma = "Train Charisma";
 /** @param {import("../.vscode").NS} ns */
 export async function Trainer(ns, members, modifier) {
     for (const member of members) {
+        if (Math.min(...GetAscensionMults(ns, member)) >= 50) { 
+            ns.gang.setMemberTask(member, "Territory Warfare"); 
+            continue 
+        }
         const str_lvl = ns.gang.getMemberInformation(member).str;
         const def_lvl = ns.gang.getMemberInformation(member).def;
         const dex_lvl = ns.gang.getMemberInformation(member).dex;
@@ -15,10 +19,6 @@ export async function Trainer(ns, members, modifier) {
         const cha_lvl = ns.gang.getMemberInformation(member).cha;
 
         const lowest_stat = Math.min(hck_lvl, avg_combat, cha_lvl);
-
-        if (modifier == "fight") { 
-            if (await Commander(ns, member, lowest_stat)) { continue } 
-        }
 
         if (lowest_stat == hck_lvl) {
             if (ns.gang.getMemberInformation(member).task != hacking) {
@@ -39,20 +39,7 @@ export async function Trainer(ns, members, modifier) {
             continue;
         }
     }
-
     return;
-}
-
-/** @param {import("../.vscode").NS} ns */
-async function Commander(ns, member, lowest_stat) {
-    const skillCap = 1000;
-
-    if (lowest_stat > skillCap) { 
-        ns.gang.setMemberTask(member, "Territory Warfare"); 
-        return true;
-    }
-
-    return false;
 }
 
 /** @param {import("../.vscode").NS} ns */
@@ -78,17 +65,20 @@ export async function GetLowestStat(ns, member) {
 }
 
 /** @param {import("../.vscode").NS} ns */
+async function GetAscensionMults(ns, member) {
+    const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
+    const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
+    const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;
+    const dex_asc_mult = ns.gang.getMemberInformation(member).dex_asc_mult;
+    const agi_asc_mult = ns.gang.getMemberInformation(member).agi_asc_mult;
+    const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
+    return [hack_asc_mult, str_asc_mult, def_asc_mult, dex_asc_mult, agi_asc_mult, cha_asc_mult];
+}
+
+/** @param {import("../.vscode").NS} ns */
 export async function CheckAscension(ns, members) {
     for (const member of members) {
-        const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
-        const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
-        const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;
-        const dex_asc_mult = ns.gang.getMemberInformation(member).dex_asc_mult;
-        const agi_asc_mult = ns.gang.getMemberInformation(member).agi_asc_mult;
-        const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
-        const multipliers = [hack_asc_mult, str_asc_mult, def_asc_mult, dex_asc_mult, agi_asc_mult, cha_asc_mult];
-
-        if (Math.min(...multipliers) >= 50) { continue }
+        if (Math.min(...GetAscensionMults(ns, member)) >= 50) { continue }
         if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { continue }
         ns.gang.ascendMember(member);
     }
