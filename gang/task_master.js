@@ -1,20 +1,14 @@
-import { Recruiter } from "/gang/recruiter.js";
-
-import { Commander } from "/gang/commander.js";
-
 import {
     Trainer,
+    Recruiter,
     GetLowestStat,
     CheckAscension
-} from "/gang/trainer.js"
+} from "/gang/generals.js"
 
 /** @param {import("../.vscode").NS} ns */
 export async function main(ns) {
     var phase = 0;
 
-    //Calls the function 3 times to start gang with 3 members
-    Recruiter(ns);
-    Recruiter(ns);
     Recruiter(ns);
     var members = ns.gang.getMemberNames();
 
@@ -31,14 +25,15 @@ export async function main(ns) {
         switch (phase) {
             case "bonus time begin":
                 await CheckAscension(ns, members);
-                await Trainer(ns, members);
+                await Trainer(ns, members, "train");
+                continue;
 
             case "bonus time end":
-                await Trainer(ns, members);
+                await Trainer(ns, members, "train");
+                continue;
 
             case 1:
-                await Trainer(ns, members);
-                await Commander(ns, members);
+                await Trainer(ns, members, "train");
                 continue;
 
             case 2:
@@ -48,8 +43,7 @@ export async function main(ns) {
                     }
                     continue;
                 }
-                await Trainer(ns, members);
-                await Commander(ns, members);
+                await Trainer(ns, members, "fight");
                 continue;
 
             case 3:
@@ -60,7 +54,9 @@ export async function main(ns) {
                     continue;
                 }
                 for (const member of members) {
-                    ns.gang.setMemberTask(member, "Territory Warfare");
+                    if (ns.gang.getMemberInformation(member).task != "Territory Warfare") {
+                        ns.gang.setMemberTask(member, "Territory Warfare");
+                    }
                 }
         }
     }
