@@ -78,7 +78,7 @@ export async function DeployWeaken(ns, target, hackTarget) {
         ns.tprintf("Killing processes on " + target);
     }
     var ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
-    var maxThreads = Math.floor(ramAvail / ns.getScriptRam(virus));
+    var maxThreads = Math.floor(ramAvail / ns.getScriptRam(weaken));
     if (maxThreads > 0){
         await ns.exec(weaken, target, maxThreads, hackTarget);
         ns.tprintf("Running weaken from " + target + " on " + hackTarget);
