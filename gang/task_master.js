@@ -22,6 +22,7 @@ export async function main(ns) {
 
 
         phase = await CheckPhase(ns, members);
+        ns.print(phase);
         switch (phase) {
             case "bonus time begin":
                 await CheckAscension(ns, members);
@@ -66,7 +67,7 @@ export async function main(ns) {
 async function CheckPhase(ns, members) {
     if (ns.gang.getBonusTime() > 1800) { return "bonus time begin" }
 
-    if (ns.gang.getBonusTime() <= 1800) { return "bonus time end" }
+    if (ns.gang.getBonusTime() <= 1800 && ns.gang.getBonusTime() > 10) { return "bonus time end" }
 
     let eval_members = [];
 
