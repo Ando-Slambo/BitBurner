@@ -68,9 +68,9 @@ export async function main(ns) {
 
 /** @param {import("../.vscode").NS} ns */
 async function CheckPhase(ns, members) {
-    if (ns.gang.getBonusTime() > 3600) { return "bonus time begin" }
+    if (ns.gang.getBonusTime() > 1800) { return "bonus time begin" }
 
-    if (ns.gang.getBonusTime() <= 3600) { return "bonus time end" }
+    if (ns.gang.getBonusTime() <= 1800) { return "bonus time end" }
 
     let eval_members = [];
 

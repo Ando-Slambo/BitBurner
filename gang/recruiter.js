@@ -2,8 +2,5 @@ const names = ["cyclops", "minotaur", "medusa", "gojira", "dragon", "gryphon", "
 
 /** @param {import("../.vscode").NS} ns */
 export function Recruiter(ns) {
-    const memberCount = ns.gang.getMemberNames().length;
-    if (ns.gang.canRecruitMember()) {
-        ns.gang.recruitMember(names[memberCount]);
-    }
+    if (ns.gang.canRecruitMember()) { ns.gang.recruitMember(names[ns.gang.getMemberNames().length]); }
 }
