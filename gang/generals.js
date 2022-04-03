@@ -88,7 +88,6 @@ export async function CheckAscension(ns, members) {
         const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
         const multipliers = [hack_asc_mult, str_asc_mult, def_asc_mult, dex_asc_mult, agi_asc_mult, cha_asc_mult];
 
-        ns.tprint(Math.min(...multipliers));
         if (Math.min(...multipliers) >= 50) { continue }
         if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { continue }
         ns.gang.ascendMember(member);
