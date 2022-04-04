@@ -46,12 +46,8 @@ export async function Root(ns, target) {
     for (var crack of Object.keys(cracks)){
         if (ns.fileExists(crack, home)){
             var runScript = cracks[crack];
-            try {
-                await runScript(target);
-            }
-            finally {
-                continue;
-            }
+            try { await runScript(target) }
+            finally {}
         }
     }
 
