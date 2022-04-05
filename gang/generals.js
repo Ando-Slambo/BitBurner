@@ -90,7 +90,7 @@ export async function CheckAscension(ns, members) {
 /** @param {import("../.vscode").NS} ns */
 function NeedsHack(ns, member) {
     const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
-    const hack_asc_diff = ns.gang.getAscensionResult(member).hack;
+    const hack_asc_diff = ns.gang.getAscensionResult(member).hack || 1;
     const hack_after_asc = hack_asc_mult * hack_asc_diff;
 
     return hack_after_asc < 2 + hack_asc_mult;
@@ -99,22 +99,22 @@ function NeedsHack(ns, member) {
 /** @param {import("../.vscode").NS} ns */
 function NeedsCombat(ns, member) {
     const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
-    const str_asc_diff = ns.gang.getAscensionResult(member).str;
+    const str_asc_diff = ns.gang.getAscensionResult(member).str || 1;
     const str_after_asc = str_asc_mult * str_asc_diff;
     const needsStr = str_after_asc < 2 + str_asc_mult
     
     const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;
-    const def_asc_diff = ns.gang.getAscensionResult(member).def;
+    const def_asc_diff = ns.gang.getAscensionResult(member).def || 1;
     const def_after_asc = def_asc_mult * def_asc_diff;
     const needsDef = def_after_asc < 2 + def_asc_mult
     
     const dex_asc_mult = ns.gang.getMemberInformation(member).dex_asc_mult;
-    const dex_asc_diff = ns.gang.getAscensionResult(member).dex;
+    const dex_asc_diff = ns.gang.getAscensionResult(member).dex || 1;
     const dex_after_asc = dex_asc_mult * dex_asc_diff;
     const needsDex = dex_after_asc < 2 + dex_asc_mult
 
     const agi_asc_mult = ns.gang.getMemberInformation(member).agi_asc_mult;
-    const agi_asc_diff = ns.gang.getAscensionResult(member).agi;
+    const agi_asc_diff = ns.gang.getAscensionResult(member).agi || 1;
     const agi_after_asc = agi_asc_mult * agi_asc_diff;
     const needsAgi = agi_after_asc < 2 + agi_asc_mult
 
@@ -124,7 +124,7 @@ function NeedsCombat(ns, member) {
 /** @param {import("../.vscode").NS} ns */
 function NeedsCharisma(ns, member) {
     const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
-    const cha_asc_diff = ns.gang.getAscensionResult(member).cha;
+    const cha_asc_diff = ns.gang.getAscensionResult(member).cha || 1;
     const cha_after_asc = cha_asc_mult * cha_asc_diff;
     
     return cha_after_asc < 2 + cha_asc_mult;
