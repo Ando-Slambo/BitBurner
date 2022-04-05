@@ -2,48 +2,37 @@ const hacking = "Train Hacking";
 const combat = "Train Combat";
 const charisma = "Train Charisma";
 
-const stopPoint = 40;
-
 /** @param {import("../.vscode").NS} ns */
-export async function Trainer(ns, members) {
-    for (const member of members) {
-        if (Math.min(...await GetAscensionMults(ns, member)) >= stopPoint) { 
-            if (ns.gang.getMemberInformation(member).task != "Territory Warfare") {
-                ns.gang.setMemberTask(member, "Territory Warfare");
-            }
-            continue;
-        }
-        const str_lvl = ns.gang.getMemberInformation(member).str;
-        const def_lvl = ns.gang.getMemberInformation(member).def;
-        const dex_lvl = ns.gang.getMemberInformation(member).dex;
-        const agi_lvl = ns.gang.getMemberInformation(member).agi;
+export async function Trainer(ns, member) {
+    const str_lvl = ns.gang.getMemberInformation(member).str;
+    const def_lvl = ns.gang.getMemberInformation(member).def;
+    const dex_lvl = ns.gang.getMemberInformation(member).dex;
+    const agi_lvl = ns.gang.getMemberInformation(member).agi;
 
-        const hck_lvl = ns.gang.getMemberInformation(member).hack;
-        const avg_combat = Math.floor((str_lvl + def_lvl + dex_lvl + agi_lvl) / 4);
-        const cha_lvl = ns.gang.getMemberInformation(member).cha;
+    const hck_lvl = ns.gang.getMemberInformation(member).hack;
+    const avg_combat = Math.floor((str_lvl + def_lvl + dex_lvl + agi_lvl) / 4);
+    const cha_lvl = ns.gang.getMemberInformation(member).cha;
 
-        const lowest_stat = Math.min(hck_lvl, avg_combat, cha_lvl);
+    const lowest_stat = Math.min(hck_lvl, avg_combat, cha_lvl);
 
-        if (lowest_stat == hck_lvl) {
-            if (ns.gang.getMemberInformation(member).task != hacking) {
-                ns.gang.setMemberTask(member, hacking);
-            }
-            continue;
+    if (lowest_stat == hck_lvl) {
+        if (ns.gang.getMemberInformation(member).task != hacking) {
+            ns.gang.setMemberTask(member, hacking);
         }
-        if (lowest_stat == avg_combat) {
-            if (ns.gang.getMemberInformation(member).task != combat) {
-                ns.gang.setMemberTask(member, combat);
-            }
-            continue;
-        }
-        if (lowest_stat == cha_lvl) {
-            if (ns.gang.getMemberInformation(member).task != charisma) {
-                ns.gang.setMemberTask(member, charisma);
-            }
-            continue;
-        }
+        return;
     }
-    return;
+    if (lowest_stat == avg_combat) {
+        if (ns.gang.getMemberInformation(member).task != combat) {
+            ns.gang.setMemberTask(member, combat);
+        }
+        return;
+    }
+    if (lowest_stat == cha_lvl) {
+        if (ns.gang.getMemberInformation(member).task != charisma) {
+            ns.gang.setMemberTask(member, charisma);
+        }
+        return;
+    }
 }
 
 /** @param {import("../.vscode").NS} ns */
@@ -69,30 +58,16 @@ export async function GetLowestStat(ns, member) {
 }
 
 /** @param {import("../.vscode").NS} ns */
-export async function GetAscensionMults(ns, member) {
-    const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
-    const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
-    const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;
-    const dex_asc_mult = ns.gang.getMemberInformation(member).dex_asc_mult;
-    const agi_asc_mult = ns.gang.getMemberInformation(member).agi_asc_mult;
-    const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
-    return [hack_asc_mult, str_asc_mult, def_asc_mult, dex_asc_mult, agi_asc_mult, cha_asc_mult];
-}
-
-/** @param {import("../.vscode").NS} ns */
-export async function CheckAscension(ns, members) {
-    for (const member of members) {
-        if (Math.min(...await GetAscensionMults(ns, member)) >= stopPoint) { continue }
-        if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { continue }
-        ns.gang.ascendMember(member);
-    }
-    return;
+export async function CheckAscension(ns, member) {
+    if (!ns.gang.getAscensionResult(member) || GetLowestStat(ns, member) >= 6000) { return }
+    if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { return }
+    ns.gang.ascendMember(member);
 }
 
 /** @param {import("../.vscode").NS} ns */
 function NeedsHack(ns, member) {
     const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
-    const hack_asc_diff = ns.gang.getAscensionResult(member).hack || 1;
+    const hack_asc_diff = ns.gang.getAscensionResult(member).hack;
     const hack_after_asc = hack_asc_mult * hack_asc_diff;
 
     return hack_after_asc < 2 + hack_asc_mult;
@@ -101,22 +76,22 @@ function NeedsHack(ns, member) {
 /** @param {import("../.vscode").NS} ns */
 function NeedsCombat(ns, member) {
     const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
-    const str_asc_diff = ns.gang.getAscensionResult(member).str || 1;
+    const str_asc_diff = ns.gang.getAscensionResult(member).str;
     const str_after_asc = str_asc_mult * str_asc_diff;
     const needsStr = str_after_asc < 2 + str_asc_mult
     
     const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;
-    const def_asc_diff = ns.gang.getAscensionResult(member).def || 1;
+    const def_asc_diff = ns.gang.getAscensionResult(member).def;
     const def_after_asc = def_asc_mult * def_asc_diff;
     const needsDef = def_after_asc < 2 + def_asc_mult
     
     const dex_asc_mult = ns.gang.getMemberInformation(member).dex_asc_mult;
-    const dex_asc_diff = ns.gang.getAscensionResult(member).dex || 1;
+    const dex_asc_diff = ns.gang.getAscensionResult(member).dex;
     const dex_after_asc = dex_asc_mult * dex_asc_diff;
     const needsDex = dex_after_asc < 2 + dex_asc_mult
 
     const agi_asc_mult = ns.gang.getMemberInformation(member).agi_asc_mult;
-    const agi_asc_diff = ns.gang.getAscensionResult(member).agi || 1;
+    const agi_asc_diff = ns.gang.getAscensionResult(member).agi;
     const agi_after_asc = agi_asc_mult * agi_asc_diff;
     const needsAgi = agi_after_asc < 2 + agi_asc_mult
 
@@ -126,7 +101,7 @@ function NeedsCombat(ns, member) {
 /** @param {import("../.vscode").NS} ns */
 function NeedsCharisma(ns, member) {
     const cha_asc_mult = ns.gang.getMemberInformation(member).cha_asc_mult;
-    const cha_asc_diff = ns.gang.getAscensionResult(member).cha || 1;
+    const cha_asc_diff = ns.gang.getAscensionResult(member).cha;
     const cha_after_asc = cha_asc_mult * cha_asc_diff;
     
     return cha_after_asc < 2 + cha_asc_mult;
