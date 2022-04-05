@@ -50,7 +50,7 @@ export async function GetLowestStat(ns, member) {
 
 /** @param {import("../.vscode").NS} ns */
 export async function CheckAscension(ns, member) {
-    if (!ns.gang.getAscensionResult(member) || GetLowestStat(ns, member) >= 6000) { return }
+    if (!ns.gang.getAscensionResult(member) || await GetLowestStat(ns, member) >= 6000) { return }
     if (NeedsHack(ns, member) || NeedsCombat(ns, member) || NeedsCharisma(ns, member)) { return }
     ns.gang.ascendMember(member);
 }
