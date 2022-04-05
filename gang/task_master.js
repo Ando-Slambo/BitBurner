@@ -11,7 +11,7 @@ export async function main(ns) {
     let members = ns.gang.getMemberNames();
 
     while (true) {
-        await ns.sleep(10000);
+        await ns.sleep(3000);
 
         //recruit if able and re-evaluate the members array
         if (ns.gang.canRecruitMember()) { Recruiter(ns) }
@@ -49,8 +49,8 @@ export async function main(ns) {
                 if (ns.gang.getMemberInformation(member).task != "Mug People") { ns.gang.setMemberTask(member, "Mug People") }
                 continue;
             }
-            //default behavior if all if statements false
-            await Trainer(ns, member);
+            //default behavior when all if statements false
+            if (lowest_stat < 100) { await Trainer(ns, member) }
         }
     }
 }

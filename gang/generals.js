@@ -1,6 +1,7 @@
 const hacking = "Train Hacking";
 const combat = "Train Combat";
 const charisma = "Train Charisma";
+const names = ["cyclops", "minotaur", "gorgon", "hydra", "dragon", "gryphon", "raiju", "kraken", "phoenix", "charybdis", "basilisk", "sphinx"];
 
 /** @param {import("../.vscode").NS} ns */
 export async function Trainer(ns, member) {
@@ -11,37 +12,27 @@ export async function Trainer(ns, member) {
 
     const hck_lvl = ns.gang.getMemberInformation(member).hack;
     const avg_combat = Math.floor((str_lvl + def_lvl + dex_lvl + agi_lvl) / 4);
-    const cha_lvl = ns.gang.getMemberInformation(member).cha;
+    //increase cha lvl by 10% to give preference to hack and combat stats
+    const cha_lvl = ns.gang.getMemberInformation(member).cha * 1.1;
 
     const lowest_stat = Math.min(hck_lvl, avg_combat, cha_lvl);
 
     if (lowest_stat == hck_lvl) {
-        if (ns.gang.getMemberInformation(member).task != hacking) {
-            ns.gang.setMemberTask(member, hacking);
-        }
+        if (ns.gang.getMemberInformation(member).task != hacking) { ns.gang.setMemberTask(member, hacking) }
         return;
     }
     if (lowest_stat == avg_combat) {
-        if (ns.gang.getMemberInformation(member).task != combat) {
-            ns.gang.setMemberTask(member, combat);
-        }
+        if (ns.gang.getMemberInformation(member).task != combat) { ns.gang.setMemberTask(member, combat) }
         return;
     }
     if (lowest_stat == cha_lvl) {
-        if (ns.gang.getMemberInformation(member).task != charisma) {
-            ns.gang.setMemberTask(member, charisma);
-        }
+        if (ns.gang.getMemberInformation(member).task != charisma) { ns.gang.setMemberTask(member, charisma) }
         return;
     }
 }
 
 /** @param {import("../.vscode").NS} ns */
-export function Recruiter(ns) {
-    const names = ["cyclops", "minotaur", "medusa", "gojira", "dragon", "gryphon", "raiju", "kraken", "phoenix", "charybdis", "basilisk", "sphinx"];
-    while (ns.gang.canRecruitMember()) { 
-        ns.gang.recruitMember(names[ns.gang.getMemberNames().length]); 
-    }
-}
+export function Recruiter(ns) { while (ns.gang.canRecruitMember()) { ns.gang.recruitMember(names[ns.gang.getMemberNames().length]) } }
 
 /** @param {import("../.vscode").NS} ns */
 export async function GetLowestStat(ns, member) {
@@ -104,5 +95,5 @@ function NeedsCharisma(ns, member) {
     const cha_asc_diff = ns.gang.getAscensionResult(member).cha;
     const cha_after_asc = cha_asc_mult * cha_asc_diff;
     
-    return cha_after_asc < 2 + cha_asc_mult;
+    return cha_after_asc < 1.5 + cha_asc_mult;
 }
