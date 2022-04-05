@@ -69,7 +69,7 @@ export async function GetLowestStat(ns, member) {
 }
 
 /** @param {import("../.vscode").NS} ns */
-async function GetAscensionMults(ns, member) {
+export async function GetAscensionMults(ns, member) {
     const hack_asc_mult = ns.gang.getMemberInformation(member).hack_asc_mult;
     const str_asc_mult = ns.gang.getMemberInformation(member).str_asc_mult;
     const def_asc_mult = ns.gang.getMemberInformation(member).def_asc_mult;

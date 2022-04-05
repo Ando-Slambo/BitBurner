@@ -2,92 +2,61 @@ import {
     Trainer,
     Recruiter,
     GetLowestStat,
+    GetAscensionMults,
     CheckAscension
 } from "/gang/generals.js"
 
-var bonusTimeStart = false;
-var bonusTimeEnd = false;
+//defining bools in module scope so both functions can access them
+let bonusTimeStart = false;
+let bonusTimeEnd = false;
 
 /** @param {import("../.vscode").NS} ns */
 export async function main(ns) {
-    var phase = 0;
-
-    Recruiter(ns);
-    var members = ns.gang.getMemberNames();
+    //defining members array outside of loop so that the value is persistent across iterations
+    let members = [];
 
     while (true) {
         await ns.sleep(10000);
 
-        if (members.length < 12) {
+        //recruit if able and re-evaluate the members array
+        if (ns.gang.canRecruitMember()) {
             Recruiter(ns);
             members = ns.gang.getMemberNames();
         }
 
-        if (bonusTimeStart) {
-            await CheckAscension(ns, members);
-        }
-        else if (bonusTimeEnd) {
-            await Trainer(ns, members);
-            continue;
-        }
+        //set members to train their needed stat
+        await Trainer(ns, members);
+        
+        CheckBonusTime(ns);
 
+        //ascend members that are ready or skip the loop if bonus time is ending
+        if (bonusTimeStart) { await CheckAscension(ns, members) }
+        else if (bonusTimeEnd) { continue }
 
-        phase = await CheckPhase(ns, members);
-        switch (phase) {
-            /*
-            case "bonus time begin":
-                await CheckAscension(ns, members);
-                await Trainer(ns, members);
+        for (const member of members) {
+            const lowest_stat = GetLowestStat(ns, member);
+
+            //if member's ascension multiplier is at least 30 they are done training, set to territory warfare
+            if (Math.min(...GetAscensionMults(ns, member) >= 30)) { 
+                if (ns.gang.getMemberInformation().task != "Territory Warfare") { ns.gang.setMemberTask(member, "Territory Warfare") }
                 continue;
-
-            case "bonus time end":
-                await Trainer(ns, members);
+            }
+            //if member's lowest stat is at least 1000 they are temporarily done training, set to human trafficking to gain rep to recruit
+            if (lowest_stat >= 1000) { 
+                if (ns.gang.getMemberInformation().task != "Human Trafficking") { ns.gang.setMemberTask(member, "Human Trafficking") }
                 continue;
-            */
-
-            case 1:
-                await Trainer(ns, members);
-                continue;
-
-            case 2:
-                if (members.length < 7) {
-                    for (const member of members) {
-                        ns.gang.setMemberTask(member, "Mug People");
-                    }
-                    continue;
-                }
-                await Trainer(ns, members);
-                continue;
-
-            case 3:
-                if (members.length < 12) {
-                    for (const member of members) {
-                        ns.gang.setMemberTask(member, "Human Trafficking");
-                    }
-                    continue;
-                }
-                await Trainer(ns, members);
+            }
+            //if member's lowest stat is at least 100 they are temporarily done training, set to mug people to gain rep to recruit
+            if (lowest_stat >= 100) { 
+                if (ns.gang.getMemberInformation().task != "Mug People") { ns.gang.setMemberTask(member, "Mug People") }                
+            }
         }
     }
 }
 
 /** @param {import("../.vscode").NS} ns */
-async function CheckPhase(ns, members) {
-    //if (ns.gang.getBonusTime() > 1800) { return "bonus time begin" }
+function CheckBonusTime(ns) {
+    //setting bonus time bools for if statement in main
     bonusTimeStart = ns.gang.getBonusTime() > 1800;
-
-    //if (ns.gang.getBonusTime() <= 1800 && ns.gang.getBonusTime() > 10) { return "bonus time end" }
     bonusTimeEnd = ns.gang.getBonusTime() <= 1800 && ns.gang.getBonusTime() > 10;
-
-    let eval_members = [];
-
-    for (const member of members) {
-        eval_members.push(await GetLowestStat(ns, member));
-    }
-
-    const lowest_stat = Math.min(...eval_members);
-
-    if (lowest_stat < 100) { return 1 }
-    if (lowest_stat < 1000) { return 2 }
-    return 3;
 }

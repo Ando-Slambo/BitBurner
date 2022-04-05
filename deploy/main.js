@@ -13,6 +13,7 @@ export async function main(ns) {
     const modifier = ns.args[0];
 
     if (modifier == "share") {
+        await DeployShare(ns, targets);
         await DeployShare(ns, purchasedServers);
         return;
     }
