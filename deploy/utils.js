@@ -5,8 +5,8 @@ const share = "/deploy/share.js";
 
 /** @param {import("../.vscode").NS} ns */
 export function GetNetworkNodes(ns) {
-    var targets = [];
-    var stack = ["home"];
+    let targets = [];
+    let stack = ["home"];
 
     while (stack.length > 0) {
         const server = stack.pop();
@@ -38,9 +38,9 @@ export async function Root(ns, target) {
     }
 
     ns.tprintf("Running cracks on " + target);
-    for (var crack of Object.keys(cracks)){
+    for (const crack of Object.keys(cracks)){
         if (ns.fileExists(crack, home)){
-            var runScript = cracks[crack];
+            const runScript = cracks[crack];
             try { await runScript(target) }
             finally {}
         }
@@ -53,8 +53,8 @@ export async function Root(ns, target) {
 export async function DeployVirus(ns, target, hackTarget) {
     await ns.scp(virus, target);
     if (ns.scriptKill(virus, target)) { ns.tprintf("Killing processes on " + target) }
-    var ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
-    var maxThreads = Math.floor(ramAvail / ns.getScriptRam(virus));
+    const ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
+    const maxThreads = Math.floor(ramAvail / ns.getScriptRam(virus));
     if (maxThreads > 0){
         ns.exec(virus, target, maxThreads, hackTarget);
         ns.tprintf("Running hacknserv from " + target + " on " + hackTarget);
@@ -65,8 +65,8 @@ export async function DeployVirus(ns, target, hackTarget) {
 export async function DeployWeaken(ns, target, hackTarget) {
     await ns.scp(weaken, target);
     if (ns.killall(target)) { ns.tprintf("Killing processes on " + target) }
-    var ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
-    var maxThreads = Math.floor(ramAvail / ns.getScriptRam(weaken));
+    const ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
+    const maxThreads = Math.floor(ramAvail / ns.getScriptRam(weaken));
     if (maxThreads > 0){
         ns.exec(weaken, target, maxThreads, hackTarget);
         ns.tprintf("Running weaken from " + target + " on " + hackTarget);
