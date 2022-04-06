@@ -52,11 +52,11 @@ export async function Root(ns, target) {
 /** @param {import("../.vscode").NS} ns */
 export async function DeployVirus(ns, target, hackTarget) {
     await ns.scp(virus, target);
-    if (await ns.scriptKill(virus, target)) { ns.tprintf("Killing processes on " + target) }
+    if (ns.scriptKill(virus, target)) { ns.tprintf("Killing processes on " + target) }
     var ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
     var maxThreads = Math.floor(ramAvail / ns.getScriptRam(virus));
     if (maxThreads > 0){
-        await ns.exec(virus, target, maxThreads, hackTarget);
+        ns.exec(virus, target, maxThreads, hackTarget);
         ns.tprintf("Running hacknserv from " + target + " on " + hackTarget);
     }
 }
@@ -64,11 +64,11 @@ export async function DeployVirus(ns, target, hackTarget) {
 /** @param {import("../.vscode").NS} ns */
 export async function DeployWeaken(ns, target, hackTarget) {
     await ns.scp(weaken, target);
-    if (await ns.killall(target)) { ns.tprintf("Killing processes on " + target) }
+    if (ns.killall(target)) { ns.tprintf("Killing processes on " + target) }
     var ramAvail = ns.getServerMaxRam(target) - ns.getServerUsedRam(target);
     var maxThreads = Math.floor(ramAvail / ns.getScriptRam(weaken));
     if (maxThreads > 0){
-        await ns.exec(weaken, target, maxThreads, hackTarget);
+        ns.exec(weaken, target, maxThreads, hackTarget);
         ns.tprintf("Running weaken from " + target + " on " + hackTarget);
     }
 }
@@ -79,11 +79,11 @@ export async function DeployShare(ns, servers) {
         if (server == "home") { continue }
 
         await ns.scp(share, server);
-        if (await ns.killall(server)) { ns.tprintf("Killing processes on " + server) }
+        if (ns.killall(server)) { ns.tprintf("Killing processes on " + server) }
         const ramAvail = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
         const maxThreads = Math.floor(ramAvail / ns.getScriptRam(share));
         if (maxThreads > 0){
-            await ns.exec(share, server, maxThreads);
+            ns.exec(share, server, maxThreads);
             ns.tprintf("Running share from " + server + " with " + maxThreads + " threads");
         }
     }
