@@ -11,7 +11,7 @@ export async function main(ns) {
     let maxAffordableRam;
 
     //this for loop starts at the highest amount of RAM and works backwards until it finds an ammount of RAM you can afford
-    for (var i = 21; i > 0; i--){
+    for (var i = 20; i > 0; i--){
         //each set of RAM is 2x greater than the previous amount
         //meaning we can use 2 ^ i to calculate each valid amount of RAM
         const ramAmount = Math.pow(2, i);

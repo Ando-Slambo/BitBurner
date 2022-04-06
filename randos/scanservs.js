@@ -6,9 +6,7 @@ export async function main(ns) {
     const filter = ns.args[0] || 1;
 
 	for (var target of Object.values(targets)) {
-        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(target) * 1.5 || ns.getServerMaxMoney(target) < filter) {
-            continue;
-        }
+        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(target) * 1.5 || ns.getServerMaxMoney(target) < filter) { continue }
         var growth = ns.getServerGrowth(target);
         var minSec = ns.getServerMinSecurityLevel(target);
         var ratio = growth / minSec;

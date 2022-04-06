@@ -26,17 +26,11 @@ export async function main(ns) {
     }
     
     for (var target of targets){
-        if (target == "home" || purchasedServers.includes(target)) {
-            continue;
-        }
+        if (target == "home" || purchasedServers.includes(target)) { continue }
 
         if (await Root(ns, target)){
-            if (modifier == "weaken") {
-                await DeployWeaken(ns, target, hackTarget);
-            }
-            else if (modifier == "virus") {
-                await DeployVirus(ns, target, hackTarget);
-            }
+            if (modifier == "weaken") { await DeployWeaken(ns, target, hackTarget) }
+            else if (modifier == "virus") { await DeployVirus(ns, target, hackTarget) }
         }
     }
 }
