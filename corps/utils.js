@@ -3,7 +3,7 @@ const jobs = ["Operations", "Engineer", "Business", "Management", "Research & De
 /** @param {import("../.vscode").NS} ns */
 async function HireEmployees(ns, division, city, amount) {
     for (let i = 0; i < amount; i++) {
-        employees.push(ns.corporation.hireEmployee(division, city));
+        ns.corporation.hireEmployee(division, city);
     }
 }
 

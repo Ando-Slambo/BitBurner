@@ -67,7 +67,7 @@ export async function main(ns) {
     for (const city of cities) {
         ns.corporation.upgradeOfficeSize(agrDiv, city, 6);
         HireEmployees(ns, agrDiv, city, 6);
-        employmentSpread = [2, 2, 1, 2, 2, 0, 0]
+        employmentSpread = [2, 2, 1, 2, 2, 0, 0];
         await AssignEmployees(ns, agrDiv, city, employmentSpread);
     }
 
