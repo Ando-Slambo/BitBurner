@@ -12,4 +12,5 @@ export async function main(ns) {
     ns.print(shareAmount);
 
     ns.corporation.buyBackShares(shareAmount);
+    ns.tprintf("Bought " + shareAmount + " shares back.");
 }
