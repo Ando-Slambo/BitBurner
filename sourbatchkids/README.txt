@@ -16,7 +16,7 @@
 
 /* [1] Execution of main.js */
 main.js takes the name of the target server as the first argument and the amount of RAM you want to use
-for the batcher as the second. RAM will default to 16TB if no amount if specified.
+for the batcher as the second. RAM will default to 16TB if no amount is specified.
 ex:
 run /sourbatchkids/main.js megacorp 32768
 
@@ -28,7 +28,7 @@ purchase a server unless you have one with the same name and with as much RAM as
 If either of those conditions are false the pre-existing server will be deleted and replaced with a new one.
 If the price is too expensive clicking No will prevent purchasing a server.
 
-After main.js has successfully executed your purchased server will be running the setup script to prepare
+After main.js has successfully executed, your purchased server will be running the setup script to prepare
 your target for batching. When it finishes it will print to the terminal to let you know.
 Next is to run estimate.js
 
