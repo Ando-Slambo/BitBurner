@@ -15,7 +15,7 @@ export async function main(ns) {
     const weakenRam = ns.getScriptRam(weaken);
     const shareRam = ns.getScriptRam(share);
 
-    if (!Root(ns, hackTarget)) {
+    if (!await Root(ns, hackTarget)) {
         ns.tprintf("Unable to root target, pick another server.");
         return;
     }
