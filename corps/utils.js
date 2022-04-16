@@ -15,8 +15,8 @@ export async function HireEmployees(ns, division, city, amount) {
 export async function AssignEmployees(ns, division, city, spread) {
     //spread object must be 7 properties with the last being 0
     for (const job of Object.keys(spread)) {
-        const desired_employees_in_job = spread[job];
         let current_employees_in_job = ns.corporation.getOffice(division, city).employeeJobs[job];
+        const desired_employees_in_job = current_employees_in_job + spread[job];
         if (current_employees_in_job >= desired_employees_in_job) { continue }
 
         for (const employee of ns.corporation.getOffice(division, city).employees) {
@@ -32,30 +32,31 @@ export async function AssignEmployees(ns, division, city, spread) {
 
 /** @param {import("../.vscode").NS} ns */
 export function AevumSpread(new_employees) {
-    const spread = {
-        "Operations": new_employees / 5,
-        "Engineer": new_employees / 5,
-        "Business": new_employees / 5,
-        "Management": new_employees / 5,
-        "Research & Development": new_employees / 5,
+    const assignment1 = new_employees / 6;
+    const asignment2 = new_employees / 3;
+    return {
+        "Operations": assignment1,
+        "Engineer": assignment1,
+        "Business": assignment1,
+        "Management": assignment1,
+        "Research & Development": asignment2,
         "Training": 0,
         "Unassigned": 0
     }
-    return spread;
 }
 
 /** @param {import("../.vscode").NS} ns */
 export function NormalSpread(new_employees) {
-    const spread = {
-        "Operations": new_employees / 2,
+    const assignment = new_employees / 2;
+    return {
+        "Operations": assignment,
         "Engineer": 0,
-        "Business": new_employees / 2,
+        "Business": assignment,
         "Management": 0,
         "Research & Development": 0,
         "Training": 0,
         "Unassigned": 0
     }
-    return spread;
 }
 
 /** @param {import("../.vscode").NS} ns */
