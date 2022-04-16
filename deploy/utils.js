@@ -42,7 +42,7 @@ export async function Root(ns, target) {
         if (ns.fileExists(crack, home)){
             const runScript = cracks[crack];
             try { await runScript(target) }
-            finally {}
+            catch {}
         }
     }
 
