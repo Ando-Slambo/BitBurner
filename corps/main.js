@@ -6,11 +6,6 @@ import {
     UpgradeWarehouse
 } from "/corps/utils.js"
 
-import {
-    ProductHandler,
-    StartDevelopment,
-    EmployeeHandler
-} from "/corps/handlers.js"
 
 const cities = ["Aevum", "Chongqing", "Sector-12", "New Tokyo", "Ishima", "Volhaven"];
 const development_city = "Aevum";
@@ -40,10 +35,5 @@ export async function main(ns) {
         await AssignEmployees(ns, division, city, NormalSpread(10));
     }
 
-    if (ns.corporation.getDivision(division).products.length == 0) { StartDevelopment(ns, division, development_city) }
-    while (true) {
-        await ProductHandler(ns, division, development_city);
-        await EmployeeHandler(ns, division, cities);
-        await ns.sleep(10000);
-    }
+    ns.run("/corps/loop.js", 1, division, cities);
 }

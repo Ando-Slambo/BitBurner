@@ -20,13 +20,13 @@ export async function main(ns) {
     
     const hackTarget = ns.args[1];
 
-    if (!Root(ns, hackTarget)) {
+    if (!await Root(ns, hackTarget) || purchasedServers.includes(target)) {
         ns.tprintf("Unable to root target, pick another server.");
         return;
     }
     
     for (var target of targets){
-        if (target == "home" || purchasedServers.includes(target)) { continue }
+        if (target == "home") { continue }
 
         if (await Root(ns, target)){
             if (modifier == "weaken") { await DeployWeaken(ns, target, hackTarget) }

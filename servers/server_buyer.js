@@ -29,22 +29,22 @@ export async function main(ns) {
 
     //this for loop will upgrade the servers that do not have as much RAM as we want - NOTE: "upgrade" means to delete and replace
     for (var i = 0; i < ns.getPurchasedServerLimit(); i++) {
-        //if the current server does not exist we buy a new server and continue
         if (!servers[i]) {
             ns.purchaseServer(name + i, maxAffordableRam);
             continue;
         }
+        
+        //if the current server has at least the amount of RAM we want skip it
+        if (ns.getServerMaxRam(servers[i]) >= maxAffordableRam) { continue }
 
-        //if the current server has less RAM than we want we stop all running processes on it and delete it
-        if (ns.getServerMaxRam(servers[i]) < maxAffordableRam) { 
+        //if the current server exists and has less RAM delete it
+        if (servers[i]) { 
             ns.killall(servers[i]);
-            ns.deleteServer(servers[i]); 
-            continue;
+            await ns.sleep(100);
+            ns.deleteServer(servers[i]);
         }
-        //else if it has more RAM than we want we skip it
-        else if (ns.getServerMaxRam(servers[i]) >= maxAffordableRam) {
-            continue;
-        }
+
+        await ns.sleep(100);
         //finally, if neither of the above if statements are true we buy a new server
         ns.purchaseServer(name + i, maxAffordableRam);
     }

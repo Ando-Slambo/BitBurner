@@ -26,8 +26,8 @@ let materials = {
 /** @param {import("../.vscode").NS} ns */
 export async function main(ns) {
     //Create corporation, create agriculture industry, unlock smart supply
-    //ns.corporation.createCorporation("Sneed\'s Seed and Feed", false); //false will only work on bitnode 3
-    //ns.corporation.expandIndustry("Agriculture", agriculture_division);
+    ns.corporation.createCorporation("Sneed\'s Seed and Feed", false); //false will only work on bitnode 3
+    ns.corporation.expandIndustry("Agriculture", agriculture_division);
     ns.corporation.unlockUpgrade("Smart Supply");
 
     //Expand division to all cities

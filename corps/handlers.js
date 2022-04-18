@@ -1,38 +1,39 @@
-let last_product;
-let iteration;
+import {
+    HireEmployees,
+    AssignEmployees,
+    AevumSpread,
+    NormalSpread
+} from "/corps/utils.js"
+
 let money_available;
 let budget;
 
 /** @param {import("../.vscode").NS} ns */
-export function StartDevelopment(ns, division, city) {
-    if (ns.corporation.getProduct(division, iteration).developmentProgress < 100) {
-        return;
-    }
-
-    last_product = ns.corporation.getDivision(division).products.pop() || 0;
-    iteration = parseInt(last_product) + 1;
+export function StartDevelopment(ns, division, city, iteration) {
+    ns.print("Starting development of " + iteration);
     money_available = ns.corporation.getCorporation().funds;
     budget = money_available / 20;
-
-    if (iteration > 3) { ns.corporation.discontinueProduct(division, (iteration - 3)) }
-
-    ns.print("Starting development of " + iteration);
     ns.corporation.makeProduct(division, city, iteration, budget, budget);
 }
 
 /** @param {import("../.vscode").NS} ns */
-export async function ProductHandler(ns, division, city) {
-    if (ns.corporation.getProduct(division, iteration).developmentProgress >= 100) {
-        let price = iteration * 2;
-        price = "MP*" + price;
+export async function ProductHandler(ns, division, city, iteration) {
+    if (ns.corporation.getProduct(division, iteration).developmentProgress < 100) { return 0 }
 
-        ns.corporation.sellProduct(division, city, iteration, "MAX", price, true);
-        await ns.sleep(1000);
-        try { ns.corporation.setProductMarketTA2(division, iteration, true) }
-        catch {  }
+    const price = "MP*" + (iteration * 2);
+    ns.corporation.sellProduct(division, city, iteration, "MAX", price, true);
+    await ns.sleep(1000);
+    try { ns.corporation.setProductMarketTA2(division, iteration, true) }
+    catch {  }
 
-        StartDevelopment(ns, division, city)
-    }
+    if (iteration > 3) { ns.corporation.discontinueProduct(division, (iteration - 3)) }
+
+    ns.print("Starting development of " + iteration);
+    money_available = ns.corporation.getCorporation().funds;
+    budget = money_available / 20;
+    ns.corporation.makeProduct(division, city, iteration, budget, budget);
+
+    return 1;
 }
 
 
