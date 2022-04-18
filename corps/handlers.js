@@ -5,44 +5,38 @@ import {
     NormalSpread
 } from "/corps/utils.js"
 
-let money_available;
-let budget;
-
 /** @param {import("../.vscode").NS} ns */
-export function StartDevelopment(ns, division, city, iteration) {
-    ns.print("Starting development of " + iteration);
-    money_available = ns.corporation.getCorporation().funds;
-    budget = money_available / 20;
-    ns.corporation.makeProduct(division, city, iteration, budget, budget);
-}
+export async function ProductHandler(ns, division, city, product) {
+    if (ns.corporation.getProduct(division, product).developmentProgress < 100) { return product }
 
-/** @param {import("../.vscode").NS} ns */
-export async function ProductHandler(ns, division, city, iteration) {
-    if (ns.corporation.getProduct(division, iteration).developmentProgress < 100) { return 0 }
-
-    const price = "MP*" + (iteration * 2);
-    ns.corporation.sellProduct(division, city, iteration, "MAX", price, true);
+    const price = "MP*" + (product * 2);
+    ns.corporation.sellProduct(division, city, product, "MAX", price, true);
     await ns.sleep(1000);
-    try { ns.corporation.setProductMarketTA2(division, iteration, true) }
+    try { ns.corporation.setProductMarketTA2(division, product, true) }
     catch {  }
 
-    if (iteration > 3) { ns.corporation.discontinueProduct(division, (iteration - 3)) }
+    if (ns.corporation.getDivision(division).products.length > 2) { ns.corporation.discontinueProduct(division, ns.corporation.getDivision(division).products[0]) }
+    await ns.sleep(100);
+    StartDevelopment(ns, division, city, product + 1);
 
-    ns.print("Starting development of " + iteration);
-    money_available = ns.corporation.getCorporation().funds;
-    budget = money_available / 20;
-    ns.corporation.makeProduct(division, city, iteration, budget, budget);
+    return product + 1;
+}
 
-    return 1;
+/** @param {import("../.vscode").NS} ns */
+export function StartDevelopment(ns, division, city, product) {
+    ns.print("Starting development of " + product);
+    const money_available = ns.corporation.getCorporation().funds;
+    const budget = money_available / 20;
+    ns.corporation.makeProduct(division, city, product, budget, budget);
 }
 
 
 
+const cities = ["Aevum", "Chongqing", "Sector-12", "New Tokyo", "Ishima", "Volhaven"];
 const aevum_differential = 60;
-let aevum_first_upgrade = false;
 
 /** @param {import("../.vscode").NS} ns */
-export async function EmployeeHandler(ns, division, cities) {
+export async function EmployeeHandler(ns, division) {
     if (ns.corporation.getOffice(division, "Aevum").employees.length > 300) { return }
 
     const money_available = ns.corporation.getCorporation().funds;
@@ -54,12 +48,8 @@ export async function EmployeeHandler(ns, division, cities) {
         if (money_available > upgrade_cost * 2) {
             await HireEmployees(ns, division, "Aevum", aevum_differential - office_size);
             await AssignEmployees(ns, division, "Aevum", AevumSpread(aevum_differential - office_size));
-            aevum_first_upgrade = true;
+            return;
         }
-    }
-    if (aevum_first_upgrade) {
-        aevum_first_upgrade = false;
-        return;
     }
 
     let upgrade_cost = 0;

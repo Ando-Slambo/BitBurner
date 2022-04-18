@@ -8,12 +8,11 @@ import {
 
 
 const cities = ["Aevum", "Chongqing", "Sector-12", "New Tokyo", "Ishima", "Volhaven"];
+const division = "Feed";
 const development_city = "Aevum";
 
 /** @param {import("../.vscode").NS} ns */
 export async function main(ns) {
-    const division = ns.args[0];
-
     ns.corporation.expandIndustry("Tobacco", division);
 
     for (const city of cities) {
@@ -35,5 +34,5 @@ export async function main(ns) {
         await AssignEmployees(ns, division, city, NormalSpread(10));
     }
 
-    ns.run("/corps/loop.js", 1, division, cities);
+    ns.run("/corps/loop.js", 1, division);
 }

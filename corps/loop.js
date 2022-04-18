@@ -4,28 +4,18 @@ import {
     EmployeeHandler
 } from "/corps/handlers.js"
 
-const cities = ["Aevum", "Chongqing", "Sector-12", "New Tokyo", "Ishima", "Volhaven"];
-
 /** @param {import("../.vscode").NS} ns */
 export async function main(ns) {
     const division = ns.args[0];
     const development_city = "Aevum";
 
-    let iteration;
-    const last_product = await parseInt(ns.corporation.getDivision(division).products.pop());
-
-    if (!last_product) {
-        iteration = 1;
-        await StartDevelopment(ns, division, development_city, iteration);
-    }
-    else {
-        iteration = last_product;
-    }
-
+    let product = parseInt(ns.corporation.getDivision(division).products.pop()) || 1;
+    if (product == 1) { StartDevelopment(ns, division, development_city, product) }
+    await ns.sleep(100);
 
     while (true) {
-        iteration += await ProductHandler(ns, division, development_city, iteration);
-        await EmployeeHandler(ns, division, cities);
+        product = await ProductHandler(ns, division, development_city, product);
+        await EmployeeHandler(ns, division);
         await ns.sleep(10000);
     }
 }
